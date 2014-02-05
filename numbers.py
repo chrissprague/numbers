@@ -24,10 +24,10 @@ class Node:
 
 class LinkedList:
 	"""
-	Linked list structure, made up of nodes,
-	which represents the data set which the
-	mathematical functions and operations rely on.
-	"""
+		Linked list structure, made up of nodes,
+		which represents the data set which the
+		mathematical functions and operations rely on.
+		"""
 	__slots__=("front")
 	def __init__(self):
 		self.front = None
@@ -60,8 +60,27 @@ class LinkedList:
 			Sum += 1
 			tmp = tmp.next
 		return Sum
+
+	def sort(self): # TODO
+		newlist = LinkedList()
+		if self.front != None:
+			return newlist
+		templist = [] # cheating - using Python's sort! Might change this
+		tmp = self.front
+		while tmp != None:
+			templist.append(tmp.data)
+			tmp = tmp.next
+		templist.sort()
+		print(templist)
+		for element in templist:
+			new_node = Node(element)
+			newlist.insert(new_node)
+		return newlist
+
 	
 def average(data):
+	if data.front == None :
+		return None
 	tmp = data.front
 	Sum = 0
 	while tmp != None:
@@ -72,6 +91,30 @@ def average(data):
 	except ZeroDivisionError:
 		return 0
 	
+def median(data):
+	if data.front == None:
+		return None
+	newdata = data.sort()
+	print(newdata)
+	if data.length() % 2 != 0:
+		index = 0
+		tmp = data.front
+		median_index = data.length() // 2
+		print((str)(median_index) + " is the median index")
+		while ( index != median_index ) and tmp != None :
+			tmp = tmp.next
+			index+=1
+			print(index)
+		return tmp.data
+	else:
+		index = 0 
+		tmp = data.front
+		while (index != ( data.length() // 2 ) - 1 ) :
+			tmp = tmp.next
+			index+=1
+		Sum = 0
+		Sum += ( ( tmp.data + tmp.next.data ) / 2 )
+		return Sum
 
 def main():
 	"""
@@ -102,7 +145,8 @@ def main():
 		
 	print(theList)
 	print("Mean: " + (str)(average(theList)))
-	
+	print("Median: " + (str)(median(theList)))
+
 	
 
 
