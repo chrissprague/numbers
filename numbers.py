@@ -28,14 +28,24 @@ class Node:
 
 class LinkedList:
 	"""
-		Linked list structure, made up of nodes,
-		which represents the data set which the
-		mathematical functions and operations rely on.
-		"""
+	Linked list structure, made up of nodes,
+	which represents the data set which the
+	mathematical functions and operations rely on.
+	"""
 	__slots__=("front")
 	def __init__(self):
+		'''
+		initialize a LinkedList object
+		'''
 		self.front = None
 	def insert(self, data):
+		"""
+		insert method for a LinkedList - 
+		to use:
+			my_linked_list.insert(####)
+		to insert a number into this instance
+		of a LinkedList.
+		"""
 		tmp = self.front
 		if tmp == None:
 			self.front = Node(data)
@@ -46,6 +56,11 @@ class LinkedList:
 			return 1
 			
 	def __str__(self):
+		"""
+		string representation of a LinkedList
+		instance. Used primarily for printing
+		and casting a LinkedList to a string.
+		"""
 		tmp = self.front
 		string = "["
 		while tmp != None:
@@ -56,6 +71,11 @@ class LinkedList:
 				tmp = tmp.next
 		return string + "]"
 	def length(self):
+		"""
+		calculates and returns the length
+		of the given list.
+		returns an integer.
+		"""
 		if self.front == None:
 			return 0
 		tmp = self.front
@@ -65,7 +85,13 @@ class LinkedList:
 			tmp = tmp.next
 		return Sum
 
-	def sort(self): # TODO
+	def sort(self):
+		"""
+		sorts the list by returning 
+		an instance of a LinkedList containing
+		the same data that the given list contained,
+		but min-sorted traditionally (i.e. 1<2)
+		"""
 		if self.front == None:
 			return newlist
 		newlist = LinkedList()
@@ -92,6 +118,10 @@ class LinkedList:
 
 	
 def average(data):
+	"""
+	calculates the average of the data
+	given in the argument "data".
+	"""
 	if data.front == None :
 		return None
 	tmp = data.front
@@ -105,6 +135,12 @@ def average(data):
 		return 0
 	
 def median(data):
+	"""
+	calculate the median value of the data
+	given in arg, "data".
+	Relies on sorting the data - see
+	LinkedList's internal sort function.
+	"""
 	if data.front == None:
 		return None
 	newlist = data.sort()
@@ -125,6 +161,22 @@ def median(data):
 		Sum = 0
 		Sum += ( ( tmp.data + tmp.next.data ) / 2 )
 		return Sum
+
+def stdDev(data,average=None):
+	"""
+	calculate the standard deviation of
+	a data set, while making use of an
+	already-supplied average value
+	(to avoid having to call the average function again)
+	default/unprovided value forcibly calls average
+	if it is not provided.
+	"""
+	if average == None : 
+		average = average(data)
+	if data.length() == 0 : # no data = no std dev
+		return None
+	
+	pass
 
 def main():
 	"""
