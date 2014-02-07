@@ -1,15 +1,33 @@
 """
-Personal project written by Christopher Sprague
+
+Personal project written and designed by Christopher Sprague
 2/2/14
 
 Performs standard functions on a given list of data
 including mean, median, trimmed average, standard variation,
 and standard deviation.
 
+standard deviation and standard variance
+are SAMPLE std dev & std var.
+
 File: numbers.py
+
 Revisions: see git commits.
+https://github.com/chrissprague
+
+Author: Christopher Sprague <css7209@rit.edu>
 
 """
+
+"""
+values used in determining trimmed mean - 
+because the trimmed mean can be evaluated many ways
+and to many different extents
+"""
+TRIMMED_MEAN_PERCENT = 12.5
+TRIMMED_MEAN_NUM_TRIMMED = 1
+TRIMMED_MEAN_USE_PERCENT = False
+# end global constant definitions
 
 class Node:
 	"""
@@ -24,7 +42,7 @@ class Node:
 		self.next = None
 	def __str__(self):
 		return self.data
-	
+		
 
 class LinkedList:
 	"""
@@ -133,7 +151,58 @@ def average(data):
 		return Sum/data.length()
 	except ZeroDivisionError:
 		return 0
+
+def trimmed_mean ( lst ) :
+	"""
+	calculate the trimmed mean for a set of data
+	This instance of trimmed mean will cut off the
+	outlying 12.5% of data in attempt to "fix"
+	or more accurately portray the data
+
+	the number trimmed using percent is rounded UP
 	
+	for example - if the number trimmed by % is determined
+	to be 3.75 data points off the front/back,
+	4 data points will be trimmed from the front/back.
+	"""
+	if lst.length() == 0 :
+		return None
+	if TRIMMED_MEAN_USE_PERCENT : # trimmed mean to use % cut-off of data
+		num_trimmed = ( lst.length() * TRIMMED_MEAN_PERCENT / 100 )
+		num_trimmed = round(num_trimmed)
+		# lower/upper bounds determine where to start/stop collecting data
+		lower_bound = num_trimmed
+		upper_bound = lst.length() - num_trimmed
+		count = 0
+		tmp = lst.front
+		Sum = 0
+		while tmp != None :
+			if not ( ( count < lower_bound ) or ( count >= upper_bound ) ) :
+				Sum += tmp.data
+			tmp = tmp.next
+			count += 1
+		return (Sum / (lst.length() - 2*num_trimmed) )
+	else : # use a discrete number of data points to trim finding average
+	# this is exactly like percent-based trimmed mean, but this method
+	# cuts out the middle man, so to speak, by simply providing
+	# the number of data points we want cut off.
+		num_trimmed = round(TRIMMED_MEAN_NUM_TRIMMED)
+		lower_bound = num_trimmed
+		upper_bound = lst.length() - num_trimmed
+		count = 0
+		tmp = lst.front
+		Sum = 0
+		while tmp != None : 
+			if not ((count<lower_bound)or(count>=upper_bound)):
+				Sum += tmp.data
+			tmp = tmp.next
+			count+=1
+		return (Sum/(lst.length()-2*num_trimmed))
+		
+	return None
+
+
+
 def median(data):
 	"""
 	calculate the median value of the data
@@ -143,7 +212,8 @@ def median(data):
 	"""
 	if data.front == None:
 		return None
-	newlist = data.sort()
+	newlist = data
+	# newlist = data.sort() # no longer necessary, and discouraged from sorting here
 	if newlist.length() % 2 != 0:
 		index = 0
 		tmp = newlist.front
@@ -162,21 +232,33 @@ def median(data):
 		Sum += ( ( tmp.data + tmp.next.data ) / 2 )
 		return Sum
 
-def stdDev(data,average=None):
+def stdVariance(lst,avg):
+	"""
+	calculate standard variance of the data
+	set making use of a given average value.
+	"""
+	if avg == None :
+		avg = average ( lst )
+	if lst.length() == 0 : # no data = no std variance
+		print("yo")
+		return None
+	tmp = lst.front
+	stdvar = 0
+	while tmp != None : 
+		stdvar += (tmp.data - avg)*(tmp.data - avg) # basically squared
+		tmp = tmp.next
+	stdvar = (stdvar)/(lst.length())
+	return stdvar
+
+
+
+def stdDev(std_var):
 	"""
 	calculate the standard deviation of
 	a data set, while making use of an
-	already-supplied average value
-	(to avoid having to call the average function again)
-	default/unprovided value forcibly calls average
-	if it is not provided.
+	already-supplied standard variance value ONLY
 	"""
-	if average == None : 
-		average = average(data)
-	if data.length() == 0 : # no data = no std dev
-		return None
-	
-	pass
+	return ((std_var)**(0.5)) # square root of standard variance
 
 def main():
 	"""
@@ -189,7 +271,7 @@ def main():
 	first_prompt = True
 	while ( text.strip() != " " and text.strip() != "" and text.strip() != "done" ) :
 		if first_prompt:
-			print("Enter numbers to be put into the data set (done to quit):")
+			print("Enter numbers to be put into the data set ('done' to quit):")
 			first_prompt = False
 		try:
 			value = (input("> "))
@@ -204,13 +286,20 @@ def main():
 		except ValueError:
 			print("Error: Non-numerical input")
 		
-		
 	print(theList)
-	print("Mean: " + (str)(average(theList)))
-	print("Median: " + (str)(median(theList)))
-
-	
-
+	sorted_list = theList.sort()
+	avg = average(sorted_list)
+	std_var = stdVariance(sorted_list,avg)
+	std_dev = stdDev(std_var)
+	tm = (str)(trimmed_mean(sorted_list))
+	print("Mean: " + (str)(avg))
+	print("Median: " + (str)(median(sorted_list)))
+	print("Standard Variance: " + (str)(std_var))
+	print("Standard Deviation: " + (str)(std_dev))
+	if TRIMMED_MEAN_USE_PERCENT : 
+		print("Trimmed Mean ("+(str)(TRIMMED_MEAN_PERCENT)+"%): " + tm)
+	else:
+		print("Trimmed Mean (num="+(str)(TRIMMED_MEAN_NUM_TRIMMED)+"): " + tm)
 
 
 
