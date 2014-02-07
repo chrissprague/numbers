@@ -5,6 +5,10 @@ Personal project written by Christopher Sprague
 Performs standard functions on a given list of data
 including mean, median, trimmed average, standard variation,
 and standard deviation.
+
+File: numbers.py
+Revisions: see git commits.
+
 """
 
 class Node:
@@ -62,19 +66,28 @@ class LinkedList:
 		return Sum
 
 	def sort(self): # TODO
-		newlist = LinkedList()
-		if self.front != None:
+		if self.front == None:
 			return newlist
-		templist = [] # cheating - using Python's sort! Might change this
+		newlist = LinkedList()
 		tmp = self.front
-		while tmp != None:
-			templist.append(tmp.data)
-			tmp = tmp.next
-		templist.sort()
-		print(templist)
-		for element in templist:
-			new_node = Node(element)
-			newlist.insert(new_node)
+		while self.front != None :
+			minimum = self.front.data
+			tmp = self.front
+			while tmp != None:
+				if tmp.data < minimum : 
+					minimum = tmp.data
+				tmp = tmp.next
+			tmp2 = self.front
+			if tmp2.data == minimum :
+				newlist.insert(minimum)
+				self.front = self.front.next
+			else:
+				while tmp2.next != None :
+					if tmp2.next.data == minimum : 
+						newlist.insert(minimum)
+						tmp2.next = tmp2.next.next
+						break
+					tmp2 = tmp2.next # yolo
 		return newlist
 
 	
@@ -94,22 +107,19 @@ def average(data):
 def median(data):
 	if data.front == None:
 		return None
-	newdata = data.sort()
-	print(newdata)
-	if data.length() % 2 != 0:
+	newlist = data.sort()
+	if newlist.length() % 2 != 0:
 		index = 0
-		tmp = data.front
-		median_index = data.length() // 2
-		print((str)(median_index) + " is the median index")
+		tmp = newlist.front
+		median_index = newlist.length() // 2
 		while ( index != median_index ) and tmp != None :
 			tmp = tmp.next
 			index+=1
-			print(index)
 		return tmp.data
 	else:
 		index = 0 
-		tmp = data.front
-		while (index != ( data.length() // 2 ) - 1 ) :
+		tmp = newlist.front
+		while (index != ( newlist.length() // 2 ) - 1 ) :
 			tmp = tmp.next
 			index+=1
 		Sum = 0
