@@ -170,6 +170,8 @@ def trimmed_mean ( lst ) :
 	if TRIMMED_MEAN_USE_PERCENT : # trimmed mean to use % cut-off of data
 		num_trimmed = ( lst.length() * TRIMMED_MEAN_PERCENT / 100 )
 		num_trimmed = round(num_trimmed)
+		if (num_trimmed * 2) >= lst.length() :
+			return None
 		# lower/upper bounds determine where to start/stop collecting data
 		lower_bound = num_trimmed
 		upper_bound = lst.length() - num_trimmed
@@ -192,6 +194,8 @@ def trimmed_mean ( lst ) :
 		count = 0
 		tmp = lst.front
 		Sum = 0
+		if (num_trimmed * 2) >= lst.length() : 
+			return None
 		while tmp != None : 
 			if not ((count<lower_bound)or(count>=upper_bound)):
 				Sum += tmp.data
