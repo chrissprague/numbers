@@ -1,3 +1,4 @@
+#!/usr/bin/python
 """
 
 Personal project written and designed by Christopher Sprague
@@ -50,12 +51,13 @@ class LinkedList:
 	which represents the data set which the
 	mathematical functions and operations rely on.
 	"""
-	__slots__=("front")
+	__slots__=("front","size")
 	def __init__(self):
 		'''
 		initialize a LinkedList object
 		'''
 		self.front = None
+		self.size = 0
 	def insert(self, data):
 		"""
 		insert method for a LinkedList - 
@@ -65,6 +67,7 @@ class LinkedList:
 		of a LinkedList.
 		"""
 		tmp = self.front
+		self.size += 1
 		if tmp == None:
 			self.front = Node(data)
 		else:
@@ -111,7 +114,7 @@ class LinkedList:
 		but min-sorted traditionally (i.e. 1<2)
 		"""
 		if self.front == None:
-			return newlist
+			return LinkedList()
 		newlist = LinkedList()
 		tmp = self.front
 		while self.front != None :
@@ -131,7 +134,7 @@ class LinkedList:
 						newlist.insert(minimum)
 						tmp2.next = tmp2.next.next
 						break
-					tmp2 = tmp2.next # yolo
+					tmp2 = tmp2.next
 		return newlist
 
 	
@@ -244,7 +247,6 @@ def stdVariance(lst,avg):
 	if avg == None :
 		avg = average ( lst )
 	if lst.length() == 0 : # no data = no std variance
-		print("yo")
 		return None
 	tmp = lst.front
 	stdvar = 0
@@ -270,15 +272,14 @@ def main():
 	functionality of the program
 	"""
 	
-	text = "temp"
 	theList = LinkedList()
 	first_prompt = True
-	while ( text.strip() != " " and text.strip() != "" and text.strip() != "done" ) :
+	while ( True ):
 		if first_prompt:
 			print("Enter numbers to be put into the data set ('done' to quit):")
 			first_prompt = False
 		try:
-			value = (input("> "))
+			value = raw_input("> ") # python 2.7 only
 		except EOFError:
 			print()
 			break
@@ -289,7 +290,11 @@ def main():
 			theList.insert(value)
 		except ValueError:
 			print("Error: Non-numerical input")
-		
+	
+	if theList.size == 0: # no values given
+		print("No input given. Exiting...")
+		exit()
+	
 	print(theList)
 	sorted_list = theList.sort()
 	avg = average(sorted_list)
