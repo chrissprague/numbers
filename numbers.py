@@ -167,6 +167,11 @@ def trimmed_mean ( lst ) :
 	for example - if the number trimmed by % is determined
 	to be 3.75 data points off the front/back,
 	4 data points will be trimmed from the front/back.
+	
+	Note: result will be None if "too much" would be cut
+	out of the list in order to find the trimmed mean
+	(either the list is too small or you're trying to
+	trim too much)
 	"""
 	if lst.length() == 0 :
 		return None
@@ -187,7 +192,8 @@ def trimmed_mean ( lst ) :
 			tmp = tmp.next
 			count += 1
 		return (Sum / (lst.length() - 2*num_trimmed) )
-	else : # use a discrete number of data points to trim finding average
+	else :
+	# use a discrete number of data points to trim finding average
 	# this is exactly like percent-based trimmed mean, but this method
 	# cuts out the middle man, so to speak, by simply providing
 	# the number of data points we want cut off.
